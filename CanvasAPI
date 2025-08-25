@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas サムネイル作成</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .canvas-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .download-btn {
+            background: #28a745;
+            margin-top: 20px;
+        }
+        
+        .download-btn:hover {
+            background: #1e7e34;
+        }
+        
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .preset-btn {
+            background: #6c757d;
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+        
+        .preset-btn:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Canvas API サムネイル作成ツール</h1>
+        
+        <div class="preset-buttons">
+            <button class="preset-btn" onclick="setPreset('youtube')">YouTube (1280x720)</button>
+            <button class="preset-btn" onclick="setPreset('instagram')">Instagram (1080x1080)</button>
+            <button class="preset-btn" onclick="setPreset('twitter')">Twitter (1200x675)</button>
+            <button class="preset-btn" onclick="setPreset('ec')">EC (800x800)</button>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>📸 素材画像をアップロード</label>
+                <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload(event)">
+                <small style="color: #666; margin-top: 5px; display: block;">JPG, PNG対応 / 商品画像や背景画像として使用</small>
+            </div>
+            
+            <div class="control-group">
+                <label>画像の配置</label>
+                <select id="imagePosition">
+                    <option value="background">背景として使用</option>
+                    <option value="center">中央に配置</option>
+                    <option value="left">左側に配置</option>
+                    <option value="right">右側に配置</option>
+                    <option value="top">上部に配置</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>画像サイズ (%)</label>
+                <input type="range" id="imageSize" min="10" max="150" value="80">
+                <span id="imageSizeValue">80%</span>
+            </div>
+            
+            <div class="control-group">
+                <label>幅 (px)</label>
+                <input type="number" id="width" value="800" min="100" max="2000">
+            </div>
+            
+            <div class="control-group">
+                <label>高さ (px)</label>
+                <input type="number" id="height" value="800" min="100" max="2000">
+            </div>
+            
+            <div class="control-group">
+                <label>メインテキスト</label>
+                <input type="text" id="mainText" value="サンプルテキスト" maxlength="30">
+            </div>
+            
+            <div class="control-group">
+                <label>サブテキスト</label>
+                <input type="text" id="subText" value="説明文" maxlength="50">
+            </div>
+            
+            <div class="control-group">
+                <label>背景色</label>
+                <select id="bgColor">
+                    <option value="linear-gradient">グラデーション（青）</option>
+                    <option value="linear-gradient-red">グラデーション（赤）</option>
+                    <option value="linear-gradient-green">グラデーション（緑）</option>
+                    <option value="solid-white">白</option>
+                    <option value="solid-black">黒</option>
+                    <option value="solid-gray">グレー</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>テキスト色</label>
+                <input type="color" id="textColor" value="#ffffff">
+            </div>
+            
+            <div class="control-group">
+                <label>アクセント色</label>
+                <input type="color" id="accentColor" value="#ff4757">
+            </div>
+            
+            <div class="control-group">
+                <label>フォントサイズ</label>
+                <input type="range" id="fontSize" min="20" max="120" value="60">
+                <span id="fontSizeValue">60px</span>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <button onclick="generateThumbnail()">🎨 サムネイル生成</button>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="thumbnailCanvas"></canvas>
+            <br>
+            <button class="download-btn" onclick="downloadImage()" id="downloadBtn" style="display: none;">
+                💾 画像をダウンロード
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('thumbnailCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // フォントサイズスライダーの値を表示
+        document.getElementById('fontSize').addEventListener('input', function() {
+            document.getElementById('fontSizeValue').textContent = this.value + 'px';
+        });
+        
+        // 画像サイズスライダーの値を表示
+        document.getElementById('imageSize').addEventListener('input', function() {
+            document.getElementById('imageSizeValue').textContent = this.value + '%';
+        });
+        
+        // アップロードされた画像を保存
+        let uploadedImage = null;
+        
+        // 画像アップロード処理
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        uploadedImage = img;
+                        generateThumbnail(); // 画像読み込み後に自動生成
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // プリセット設定
+        function setPreset(type) {
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            
+            switch(type) {
+                case 'youtube':
+                    widthInput.value = 1280;
+                    heightInput.value = 720;
+                    document.getElementById('mainText').value = 'YouTube動画';
+                    break;
+                case 'instagram':
+                    widthInput.value = 1080;
+                    heightInput.value = 1080;
+                    document.getElementById('mainText').value = 'Instagram投稿';
+                    break;
+                case 'twitter':
+                    widthInput.value = 1200;
+                    heightInput.value = 675;
+                    document.getElementById('mainText').value = 'Twitter投稿';
+                    break;
+                case 'ec':
+                    widthInput.value = 800;
+                    heightInput.value = 800;
+                    document.getElementById('mainText').value = '商品名';
+                    document.getElementById('subText').value = '¥9,980';
+                    break;
+            }
+        }
+        
+        // 背景を描画
+        function drawBackground(width, height, bgType) {
+            // アップロードされた画像が背景として設定されている場合
+            if (uploadedImage && document.getElementById('imagePosition').value === 'background') {
+                drawUploadedImage(width, height, 'background');
+                return;
+            }
+            
+            switch(bgType) {
+                case 'linear-gradient':
+                    const gradient1 = ctx.createLinearGradient(0, 0, width, height);
+                    gradient1.addColorStop(0, '#667eea');
+                    gradient1.addColorStop(1, '#764ba2');
+                    ctx.fillStyle = gradient1;
+                    break;
+                case 'linear-gradient-red':
+                    const gradient2 = ctx.createLinearGradient(0, 0, width, height);
+                    gradient2.addColorStop(0, '#ff6b6b');
+                    gradient2.addColorStop(1, '#ee5a52');
+                    ctx.fillStyle = gradient2;
+                    break;
+                case 'linear-gradient-green':
+                    const gradient3 = ctx.createLinearGradient(0, 0, width, height);
+                    gradient3.addColorStop(0, '#56ab2f');
+                    gradient3.addColorStop(1, '#a8e6cf');
+                    ctx.fillStyle = gradient3;
+                    break;
+                case 'solid-white':
+                    ctx.fillStyle = '#ffffff';
+                    break;
+                case 'solid-black':
+                    ctx.fillStyle = '#000000';
+                    break;
+                case 'solid-gray':
+                    ctx.fillStyle = '#6c757d';
+                    break;
+            }
+            ctx.fillRect(0, 0, width, height);
+        }
+        
+        // アップロードされた画像を描画
+        function drawUploadedImage(width, height, position) {
+            if (!uploadedImage) return;
+            
+            const imageSize = parseInt(document.getElementById('imageSize').value) / 100;
+            
+            const imgAspectRatio = uploadedImage.width / uploadedImage.height;
+            const canvasAspectRatio = width / height;
+            
+            let drawWidth, drawHeight, drawX, drawY;
+            
+            if (position === 'background') {
+                // 背景として全面に表示（アスペクト比を保持してクロップ）
+                if (imgAspectRatio > canvasAspectRatio) {
+                    drawHeight = height;
+                    drawWidth = height * imgAspectRatio;
+                    drawX = (width - drawWidth) / 2;
+                    drawY = 0;
+                } else {
+                    drawWidth = width;
+                    drawHeight = width / imgAspectRatio;
+                    drawX = 0;
+                    drawY = (height - drawHeight) / 2;
+                }
+                
+                // 半透明オーバーレイ
+                ctx.drawImage(uploadedImage, drawX, drawY, drawWidth, drawHeight);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.fillRect(0, 0, width, height);
+            } else {
+                // 商品画像として配置
+                const maxSize = Math.min(width, height) * imageSize;
+                
+                if (imgAspectRatio > 1) {
+                    drawWidth = maxSize;
+                    drawHeight = maxSize / imgAspectRatio;
+                } else {
+                    drawHeight = maxSize;
+                    drawWidth = maxSize * imgAspectRatio;
+                }
+                
+                // 配置位置を計算
+                switch(position) {
+                    case 'center':
+                        drawX = (width - drawWidth) / 2;
+                        drawY = (height - drawHeight) / 2;
+                        break;
+                    case 'left':
+                        drawX = width * 0.1;
+                        drawY = (height - drawHeight) / 2;
+                        break;
+                    case 'right':
+                        drawX = width * 0.9 - drawWidth;
+                        drawY = (height - drawHeight) / 2;
+                        break;
+                    case 'top':
+                        drawX = (width - drawWidth) / 2;
+                        drawY = height * 0.1;
+                        break;
+                }
+                
+                // 影を追加
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetX = 5;
+                ctx.shadowOffsetY = 5;
+                
+                ctx.drawImage(uploadedImage, drawX, drawY, drawWidth, drawHeight);
+                
+                // 影をリセット
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            }
+        }
+        
+        // 装飾要素を描画
+        function drawDecorations(width, height) {
+            const accentColor = document.getElementById('accentColor').value;
+            
+            // 半透明の円形装飾
+            ctx.fillStyle = accentColor + '20';
+            ctx.beginPath();
+            ctx.arc(width * 0.8, height * 0.2, width * 0.15, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.fillStyle = accentColor + '15';
+            ctx.beginPath();
+            ctx.arc(width * 0.1, height * 0.8, width * 0.1, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        // テキストを描画
+        function drawText(width, height) {
+            const mainText = document.getElementById('mainText').value;
+            const subText = document.getElementById('subText').value;
+            const textColor = document.getElementById('textColor').value;
+            const fontSize = parseInt(document.getElementById('fontSize').value);
+            
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // 影の設定
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            // メインテキスト
+            ctx.fillStyle = textColor;
+            ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+            ctx.fillText(mainText, width / 2, height / 2 - fontSize / 3);
+            
+            // サブテキスト
+            if (subText) {
+                ctx.font = `${fontSize * 0.4}px Arial, sans-serif`;
+                ctx.fillText(subText, width / 2, height / 2 + fontSize / 2);
+            }
+            
+            // 影をリセット
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+        }
+        
+        // サムネイル生成
+        function generateThumbnail() {
+            const width = parseInt(document.getElementById('width').value);
+            const height = parseInt(document.getElementById('height').value);
+            const bgType = document.getElementById('bgColor').value;
+            const imagePosition = document.getElementById('imagePosition').value;
+            
+            // キャンバスサイズ設定
+            canvas.width = width;
+            canvas.height = height;
+            
+            // 背景描画
+            drawBackground(width, height, bgType);
+            
+            // 装飾要素描画（背景画像でない場合のみ）
+            if (!uploadedImage || imagePosition !== 'background') {
+                drawDecorations(width, height);
+            }
+            
+            // アップロードされた画像を描画（背景以外の場合）
+            if (uploadedImage && imagePosition !== 'background') {
+                drawUploadedImage(width, height, imagePosition);
+            }
+            
+            // テキスト描画
+            drawText(width, height);
+            
+            // ダウンロードボタンを表示
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+        }
+        
+        // 画像ダウンロード
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = 'thumbnail.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // 初期サムネイル生成
+        generateThumbnail();
+    </script>
+</body>
+</html>
