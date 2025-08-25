@@ -1,90 +1,182 @@
-<!-- index.html (メインページ) -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>デザインツール集 - Thumbnail Creator Suite</title>
+    <title>デザインツール集 - 全機能統合版</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 40px 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
             color: white;
+            min-height: 100vh;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            text-align: center;
-        }
-        
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-        
-        .tool-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 30px;
-            transition: all 0.3s ease;
-        }
-        
-        .tool-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        
-        .tool-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-            display: block;
-        }
-        
-        .tool-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        
-        .tool-description {
-            margin-bottom: 25px;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-        
-        .tool-button {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            border: 2px solid rgba(255,255,255,0.3);
-            transition: all 0.2s ease;
-        }
-        
-        .tool-button:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.05);
+            padding: 20px;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            padding: 40px 0;
         }
         
-        .version {
-            opacity: 0.7;
-            margin-top: 10px;
+        .tool-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .tool-btn {
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .tool-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .tool-btn.active {
+            background: rgba(255,255,255,0.4);
+            border-color: white;
+        }
+        
+        .tool-section {
+            display: none;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .tool-section.active {
+            display: block;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        input, select, button {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .preview-area {
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 100%;
+        }
+        
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .badge-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .badge-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .download-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+        }
+        
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .preset-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .preset-btn:hover {
+            background: rgba(255,255,255,0.3);
         }
     </style>
 </head>
@@ -93,69 +185,524 @@
         <div class="header">
             <h1>🎨 デザインツール集</h1>
             <p>プロ級のサムネイル・バッジ・パーツを簡単作成</p>
-            <div class="version">Version 1.0 - 永続利用可能</div>
+            <div style="opacity: 0.8; margin-top: 10px;">Version 2.0 - 全機能統合版</div>
         </div>
         
-        <div class="tools-grid">
-            <div class="tool-card">
-                <span class="tool-icon">🖼️</span>
-                <div class="tool-title">サムネイル作成ツール</div>
-                <div class="tool-description">
-                    YouTube、Instagram、ECサイト用のサムネイルを作成。
-                    画像アップロード、テキスト追加、各種エフェクト対応。
-                </div>
-                <a href="thumbnail-creator.html" class="tool-button">ツールを開く</a>
+        <div class="tool-selector">
+            <button class="tool-btn active" onclick="showTool('thumbnail')" id="btn-thumbnail">
+                🖼️ サムネイル作成
+            </button>
+            <button class="tool-btn" onclick="showTool('badge')" id="btn-badge">
+                🏷️ バッジ作成
+            </button>
+            <button class="tool-btn" onclick="showTool('parts')" id="btn-parts">
+                📏 実寸パーツ
+            </button>
+        </div>
+        
+        <!-- サムネイル作成ツール -->
+        <div id="tool-thumbnail" class="tool-section active">
+            <h2>🖼️ サムネイル作成ツール</h2>
+            
+            <div class="preset-buttons">
+                <button class="preset-btn" onclick="setThumbnailPreset('youtube')">YouTube (1280x720)</button>
+                <button class="preset-btn" onclick="setThumbnailPreset('instagram')">Instagram (1080x1080)</button>
+                <button class="preset-btn" onclick="setThumbnailPreset('twitter')">Twitter (1200x675)</button>
+                <button class="preset-btn" onclick="setThumbnailPreset('ec')">EC (800x800)</button>
             </div>
             
-            <div class="tool-card">
-                <span class="tool-icon">🏷️</span>
-                <div class="tool-title">バッジ作成ツール</div>
-                <div class="tool-description">
-                    「30% OFF」「NEW」「選べる2色」などのバッジやマークを作成。
-                    セール用から品質表示まで幅広くカバー。
+            <div class="controls">
+                <div class="control-group">
+                    <label>📸 画像アップロード</label>
+                    <input type="file" id="thumbnailImage" accept="image/*" onchange="handleThumbnailImageUpload(event)">
                 </div>
-                <a href="badge-creator.html" class="tool-button">ツールを開く</a>
+                <div class="control-group">
+                    <label>幅 (px)</label>
+                    <input type="number" id="thumbnailWidth" value="800" min="100" max="2000">
+                </div>
+                <div class="control-group">
+                    <label>高さ (px)</label>
+                    <input type="number" id="thumbnailHeight" value="600" min="100" max="2000">
+                </div>
+                <div class="control-group">
+                    <label>メインテキスト</label>
+                    <input type="text" id="thumbnailMainText" value="サンプルテキスト" maxlength="30">
+                </div>
+                <div class="control-group">
+                    <label>サブテキスト</label>
+                    <input type="text" id="thumbnailSubText" value="説明文" maxlength="50">
+                </div>
+                <div class="control-group">
+                    <label>背景色</label>
+                    <select id="thumbnailBgColor">
+                        <option value="gradient-blue">グラデーション（青）</option>
+                        <option value="gradient-red">グラデーション（赤）</option>
+                        <option value="gradient-green">グラデーション（緑）</option>
+                        <option value="solid-white">白</option>
+                        <option value="solid-black">黒</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>テキスト色</label>
+                    <input type="color" id="thumbnailTextColor" value="#ffffff">
+                </div>
             </div>
             
-            <div class="tool-card">
-                <span class="tool-icon">📏</span>
-                <div class="tool-title">実寸パーツ作成</div>
-                <div class="tool-description">
-                    実際のcm・mm単位でパーツを作成。
-                    名刺、ステッカー、ラベルなど印刷用デザインに最適。
-                </div>
-                <a href="parts-creator.html" class="tool-button">ツールを開く</a>
+            <div style="text-align: center;">
+                <button onclick="generateThumbnail()">🎨 サムネイル生成</button>
+            </div>
+            
+            <div class="preview-area">
+                <canvas id="thumbnailCanvas"></canvas>
+                <br><br>
+                <button onclick="downloadThumbnail()" id="downloadThumbnailBtn" style="display: none;">
+                    💾 ダウンロード
+                </button>
             </div>
         </div>
         
-        <div style="margin-top: 80px; text-align: center;">
-            <h3>💡 使い方のコツ</h3>
-            <ul style="text-align: left; max-width: 600px; margin: 20px auto;">
-                <li>各ツールで作成した素材をダウンロード保存</li>
-                <li>このページをブックマークして何度でも利用</li>
-                <li>オフラインでも動作（初回読み込み後）</li>
-                <li>スマホ・タブレットでも使用可能</li>
-            </ul>
+        <!-- バッジ作成ツール -->
+        <div id="tool-badge" class="tool-section">
+            <h2>🏷️ バッジ作成ツール</h2>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label>メインテキスト</label>
+                    <input type="text" id="badgeMainText" value="30% OFF" maxlength="15">
+                </div>
+                <div class="control-group">
+                    <label>サブテキスト</label>
+                    <input type="text" id="badgeSubText" value="SALE" maxlength="10">
+                </div>
+                <div class="control-group">
+                    <label>幅 (px)</label>
+                    <input type="number" id="badgeWidth" value="120" min="50" max="300">
+                </div>
+                <div class="control-group">
+                    <label>高さ (px)</label>
+                    <input type="number" id="badgeHeight" value="40" min="20" max="150">
+                </div>
+                <div class="control-group">
+                    <label>メインカラー</label>
+                    <input type="color" id="badgeColor1" value="#ff4757">
+                </div>
+                <div class="control-group">
+                    <label>アクセントカラー</label>
+                    <input type="color" id="badgeColor2" value="#ff3742">
+                </div>
+                <div class="control-group">
+                    <label>形状</label>
+                    <select id="badgeShape">
+                        <option value="rounded">角丸長方形</option>
+                        <option value="pill">ピル型</option>
+                        <option value="circle">円形</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button onclick="generateBadge()">🎨 バッジ生成</button>
+            </div>
+            
+            <div class="preview-area">
+                <canvas id="badgeCanvas"></canvas>
+                <br><br>
+                <button onclick="downloadBadge()" id="downloadBadgeBtn" style="display: none;">
+                    💾 ダウンロード
+                </button>
+            </div>
         </div>
         
-        <footer style="margin-top: 60px; opacity: 0.7; font-size: 14px;">
-            <p>GitHub Pages で永続ホスティング中 🚀</p>
-            <p>© 2025 Your Design Tools - Built with ❤️</p>
-        </footer>
+        <!-- 実寸パーツ作成ツール -->
+        <div id="tool-parts" class="tool-section">
+            <h2>📏 実寸パーツ作成</h2>
+            
+            <div class="preset-buttons">
+                <button class="preset-btn" onclick="setPartsPreset('business-card')">名刺 (9×5.5cm)</button>
+                <button class="preset-btn" onclick="setPartsPreset('sticker')">ステッカー (3×3cm)</button>
+                <button class="preset-btn" onclick="setPartsPreset('bookmark')">しおり (15×4cm)</button>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label>幅 (cm)</label>
+                    <input type="number" id="partsWidth" value="5" min="0.1" max="50" step="0.1">
+                </div>
+                <div class="control-group">
+                    <label>高さ (cm)</label>
+                    <input type="number" id="partsHeight" value="3" min="0.1" max="50" step="0.1">
+                </div>
+                <div class="control-group">
+                    <label>テキスト</label>
+                    <input type="text" id="partsText" value="5cm × 3cm" maxlength="20">
+                </div>
+                <div class="control-group">
+                    <label>背景色</label>
+                    <input type="color" id="partsColor" value="#3498db">
+                </div>
+                <div class="control-group">
+                    <label>テキスト色</label>
+                    <input type="color" id="partsTextColor" value="#ffffff">
+                </div>
+                <div class="control-group">
+                    <label>形状</label>
+                    <select id="partsShape">
+                        <option value="rectangle">長方形</option>
+                        <option value="rounded">角丸長方形</option>
+                        <option value="circle">円形</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button onclick="generateParts()">🎨 パーツ生成</button>
+            </div>
+            
+            <div class="preview-area">
+                <canvas id="partsCanvas"></canvas>
+                <br><br>
+                <button onclick="downloadParts()" id="downloadPartsBtn" style="display: none;">
+                    💾 ダウンロード
+                </button>
+                <div id="partsInfo" style="margin-top: 15px; font-size: 14px; color: #666;"></div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        let uploadedThumbnailImage = null;
+        
+        // ツール切り替え
+        function showTool(toolName) {
+            // すべてのツールを非表示
+            document.querySelectorAll('.tool-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // すべてのボタンを非アクティブ
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 選択されたツールを表示
+            document.getElementById('tool-' + toolName).classList.add('active');
+            document.getElementById('btn-' + toolName).classList.add('active');
+        }
+        
+        // サムネイル関連関数
+        function setThumbnailPreset(type) {
+            const presets = {
+                youtube: { width: 1280, height: 720, main: 'YouTube動画', sub: '新着' },
+                instagram: { width: 1080, height: 1080, main: 'Instagram', sub: '投稿' },
+                twitter: { width: 1200, height: 675, main: 'Twitter', sub: '話題' },
+                ec: { width: 800, height: 800, main: '商品名', sub: '¥9,980' }
+            };
+            
+            const preset = presets[type];
+            document.getElementById('thumbnailWidth').value = preset.width;
+            document.getElementById('thumbnailHeight').value = preset.height;
+            document.getElementById('thumbnailMainText').value = preset.main;
+            document.getElementById('thumbnailSubText').value = preset.sub;
+        }
+        
+        function handleThumbnailImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        uploadedThumbnailImage = img;
+                        generateThumbnail();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function generateThumbnail() {
+            const canvas = document.getElementById('thumbnailCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = parseInt(document.getElementById('thumbnailWidth').value);
+            const height = parseInt(document.getElementById('thumbnailHeight').value);
+            const mainText = document.getElementById('thumbnailMainText').value;
+            const subText = document.getElementById('thumbnailSubText').value;
+            const bgColor = document.getElementById('thumbnailBgColor').value;
+            const textColor = document.getElementById('thumbnailTextColor').value;
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // 背景描画
+            drawThumbnailBackground(ctx, width, height, bgColor);
+            
+            // 画像描画
+            if (uploadedThumbnailImage) {
+                drawThumbnailImage(ctx, uploadedThumbnailImage, width, height);
+            }
+            
+            // テキスト描画
+            drawThumbnailText(ctx, mainText, subText, width, height, textColor);
+            
+            document.getElementById('downloadThumbnailBtn').style.display = 'inline-block';
+        }
+        
+        function drawThumbnailBackground(ctx, width, height, bgType) {
+            switch(bgType) {
+                case 'gradient-blue':
+                    const gradientBlue = ctx.createLinearGradient(0, 0, width, height);
+                    gradientBlue.addColorStop(0, '#667eea');
+                    gradientBlue.addColorStop(1, '#764ba2');
+                    ctx.fillStyle = gradientBlue;
+                    break;
+                case 'gradient-red':
+                    const gradientRed = ctx.createLinearGradient(0, 0, width, height);
+                    gradientRed.addColorStop(0, '#ff6b6b');
+                    gradientRed.addColorStop(1, '#ee5a52');
+                    ctx.fillStyle = gradientRed;
+                    break;
+                case 'gradient-green':
+                    const gradientGreen = ctx.createLinearGradient(0, 0, width, height);
+                    gradientGreen.addColorStop(0, '#56ab2f');
+                    gradientGreen.addColorStop(1, '#a8e6cf');
+                    ctx.fillStyle = gradientGreen;
+                    break;
+                case 'solid-white':
+                    ctx.fillStyle = '#ffffff';
+                    break;
+                case 'solid-black':
+                    ctx.fillStyle = '#000000';
+                    break;
+            }
+            ctx.fillRect(0, 0, width, height);
+        }
+        
+        function drawThumbnailImage(ctx, img, canvasWidth, canvasHeight) {
+            const imgAspect = img.width / img.height;
+            const canvasAspect = canvasWidth / canvasHeight;
+            
+            let drawWidth, drawHeight, drawX, drawY;
+            
+            const targetSize = Math.min(canvasWidth, canvasHeight) * 0.6;
+            
+            if (imgAspect > 1) {
+                drawWidth = targetSize;
+                drawHeight = targetSize / imgAspect;
+            } else {
+                drawHeight = targetSize;
+                drawWidth = targetSize * imgAspect;
+            }
+            
+            drawX = (canvasWidth - drawWidth) / 2;
+            drawY = (canvasHeight - drawHeight) / 2 - canvasHeight * 0.1;
+            
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 5;
+            ctx.shadowOffsetY = 5;
+            
+            ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+            
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+        }
+        
+        function drawThumbnailText(ctx, mainText, subText, width, height, textColor) {
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            const fontSize = Math.min(width, height) * 0.08;
+            ctx.font = `bold ${fontSize}px Arial`;
+            
+            const textY = height * 0.8;
+            ctx.fillText(mainText, width / 2, textY);
+            
+            if (subText) {
+                ctx.font = `${fontSize * 0.6}px Arial`;
+                ctx.fillText(subText, width / 2, textY + fontSize * 0.8);
+            }
+            
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+        }
+        
+        function downloadThumbnail() {
+            const canvas = document.getElementById('thumbnailCanvas');
+            const link = document.createElement('a');
+            link.download = 'thumbnail.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // バッジ関連関数
+        function generateBadge() {
+            const canvas = document.getElementById('badgeCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = parseInt(document.getElementById('badgeWidth').value);
+            const height = parseInt(document.getElementById('badgeHeight').value);
+            const mainText = document.getElementById('badgeMainText').value;
+            const subText = document.getElementById('badgeSubText').value;
+            const color1 = document.getElementById('badgeColor1').value;
+            const color2 = document.getElementById('badgeColor2').value;
+            const shape = document.getElementById('badgeShape').value;
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // グラデーション背景
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+            ctx.fillStyle = gradient;
+            
+            // 形状描画
+            drawBadgeShape(ctx, shape, width, height);
+            
+            // テキスト描画
+            drawBadgeText(ctx, mainText, subText, width, height);
+            
+            document.getElementById('downloadBadgeBtn').style.display = 'inline-block';
+        }
+        
+        function drawBadgeShape(ctx, shape, width, height) {
+            switch(shape) {
+                case 'rounded':
+                    roundedRect(ctx, 0, 0, width, height, 8);
+                    break;
+                case 'pill':
+                    roundedRect(ctx, 0, 0, width, height, height/2);
+                    break;
+                case 'circle':
+                    ctx.beginPath();
+                    ctx.arc(width/2, height/2, Math.min(width, height)/2, 0, 2 * Math.PI);
+                    break;
+            }
+            ctx.fill();
+        }
+        
+        function roundedRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function drawBadgeText(ctx, mainText, subText, width, height) {
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            const fontSize = Math.min(width * 0.25, height * 0.4);
+            ctx.font = `bold ${fontSize}px Arial`;
+            
+            if (subText) {
+                ctx.fillText(mainText, width/2, height/2 - fontSize/4);
+                ctx.font = `bold ${fontSize * 0.6}px Arial`;
+                ctx.fillText(subText, width/2, height/2 + fontSize/3);
+            } else {
+                ctx.fillText(mainText, width/2, height/2);
+            }
+        }
+        
+        function downloadBadge() {
+            const canvas = document.getElementById('badgeCanvas');
+            const link = document.createElement('a');
+            link.download = 'badge.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // パーツ関連関数
+        function setPartsPreset(type) {
+            const presets = {
+                'business-card': { width: 9, height: 5.5, text: '名刺' },
+                'sticker': { width: 3, height: 3, text: 'ステッカー' },
+                'bookmark': { width: 4, height: 15, text: 'しおり' }
+            };
+            
+            const preset = presets[type];
+            document.getElementById('partsWidth').value = preset.width;
+            document.getElementById('partsHeight').value = preset.height;
+            document.getElementById('partsText').value = preset.text;
+        }
+        
+        function generateParts() {
+            const canvas = document.getElementById('partsCanvas');
+            const ctx = canvas.getContext('2d');
+            const widthCm = parseFloat(document.getElementById('partsWidth').value);
+            const heightCm = parseFloat(document.getElementById('partsHeight').value);
+            const text = document.getElementById('partsText').value;
+            const bgColor = document.getElementById('partsColor').value;
+            const textColor = document.getElementById('partsTextColor').value;
+            const shape = document.getElementById('partsShape').value;
+            
+            // 1cm = 37.795275591px (96 DPI)
+            const widthPx = widthCm * 37.795275591;
+            const heightPx = heightCm * 37.795275591;
+            
+            canvas.width = widthPx;
+            canvas.height = heightPx;
+            
+            // 背景
+            ctx.fillStyle = bgColor;
+            if (shape === 'circle') {
+                ctx.beginPath();
+                ctx.arc(widthPx/2, heightPx/2, Math.min(widthPx, heightPx)/2, 0, 2 * Math.PI);
+                ctx.fill();
+            } else if (shape === 'rounded') {
+                roundedRect(ctx, 0, 0, widthPx, heightPx, 8);
+                ctx.fill();
+            } else {
+                ctx.fillRect(0, 0, widthPx, heightPx);
+            }
+            
+            // テキスト
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `bold ${Math.min(widthPx, heightPx) * 0.15}px Arial`;
+            ctx.fillText(text, widthPx/2, heightPx/2);
+            
+            // 情報表示
+            document.getElementById('partsInfo').innerHTML = `
+                実寸サイズ: ${widthCm}cm × ${heightCm}cm<br>
+                ピクセル: ${Math.round(widthPx)}px × ${Math.round(heightPx)}px<br>
+                面積: ${(widthCm * heightCm).toFixed(2)}cm²
+            `;
+            
+            document.getElementById('downloadPartsBtn').style.display = 'inline-block';
+        }
+        
+        function downloadParts() {
+            const canvas = document.getElementById('partsCanvas');
+            const widthCm = document.getElementById('partsWidth').value;
+            const heightCm = document.getElementById('partsHeight').value;
+            const link = document.createElement('a');
+            link.download = `parts_${widthCm}x${heightCm}cm.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // 初期化
+        generateThumbnail();
+    </script>
 </body>
 </html>
-
-
-<!-- フォルダ構成例 -->
-<!--
-your-repository/
-├── index.html                 (メインページ - 上記のコード)
-├── thumbnail-creator.html     (サムネイル作成ツール)
-├── badge-creator.html         (バッジ作成ツール)
-├── parts-creator.html         (実寸パーツ作成ツール)
-├── README.md                  (プロジェクト説明)
-└── assets/                    (画像やアイコンフォルダ)
-    ├── icon-192.png
-    └── icon-512.png
--->
