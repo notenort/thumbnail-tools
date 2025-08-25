@@ -1,0 +1,161 @@
+<!-- index.html (メインページ) -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>デザインツール集 - Thumbnail Creator Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .tool-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .tool-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .tool-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .tool-description {
+            margin-bottom: 25px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .tool-button {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .tool-button:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .version {
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 デザインツール集</h1>
+            <p>プロ級のサムネイル・バッジ・パーツを簡単作成</p>
+            <div class="version">Version 1.0 - 永続利用可能</div>
+        </div>
+        
+        <div class="tools-grid">
+            <div class="tool-card">
+                <span class="tool-icon">🖼️</span>
+                <div class="tool-title">サムネイル作成ツール</div>
+                <div class="tool-description">
+                    YouTube、Instagram、ECサイト用のサムネイルを作成。
+                    画像アップロード、テキスト追加、各種エフェクト対応。
+                </div>
+                <a href="thumbnail-creator.html" class="tool-button">ツールを開く</a>
+            </div>
+            
+            <div class="tool-card">
+                <span class="tool-icon">🏷️</span>
+                <div class="tool-title">バッジ作成ツール</div>
+                <div class="tool-description">
+                    「30% OFF」「NEW」「選べる2色」などのバッジやマークを作成。
+                    セール用から品質表示まで幅広くカバー。
+                </div>
+                <a href="badge-creator.html" class="tool-button">ツールを開く</a>
+            </div>
+            
+            <div class="tool-card">
+                <span class="tool-icon">📏</span>
+                <div class="tool-title">実寸パーツ作成</div>
+                <div class="tool-description">
+                    実際のcm・mm単位でパーツを作成。
+                    名刺、ステッカー、ラベルなど印刷用デザインに最適。
+                </div>
+                <a href="parts-creator.html" class="tool-button">ツールを開く</a>
+            </div>
+        </div>
+        
+        <div style="margin-top: 80px; text-align: center;">
+            <h3>💡 使い方のコツ</h3>
+            <ul style="text-align: left; max-width: 600px; margin: 20px auto;">
+                <li>各ツールで作成した素材をダウンロード保存</li>
+                <li>このページをブックマークして何度でも利用</li>
+                <li>オフラインでも動作（初回読み込み後）</li>
+                <li>スマホ・タブレットでも使用可能</li>
+            </ul>
+        </div>
+        
+        <footer style="margin-top: 60px; opacity: 0.7; font-size: 14px;">
+            <p>GitHub Pages で永続ホスティング中 🚀</p>
+            <p>© 2025 Your Design Tools - Built with ❤️</p>
+        </footer>
+    </div>
+</body>
+</html>
+
+
+<!-- フォルダ構成例 -->
+<!--
+your-repository/
+├── index.html                 (メインページ - 上記のコード)
+├── thumbnail-creator.html     (サムネイル作成ツール)
+├── badge-creator.html         (バッジ作成ツール)
+├── parts-creator.html         (実寸パーツ作成ツール)
+├── README.md                  (プロジェクト説明)
+└── assets/                    (画像やアイコンフォルダ)
+    ├── icon-192.png
+    └── icon-512.png
+-->
